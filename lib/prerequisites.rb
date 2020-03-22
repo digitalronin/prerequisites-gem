@@ -5,4 +5,8 @@ class Prerequisites
     @config = config
   end
 
+  def check
+    true
+  end
+
 end

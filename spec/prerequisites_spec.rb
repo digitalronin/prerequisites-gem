@@ -7,4 +7,8 @@ describe Prerequisites do
   it "instantiates" do
     expect(prereq).to be_a(Prerequisites)
   end
+
+  it "checks" do
+    expect(prereq.check).to be(true)
+  end
 end
