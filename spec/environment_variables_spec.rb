@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Prerequisites, "environment variables" do
-  let(:environment_variables) { nil }
+  let(:environment_variables) { ["FOO"] }
 
   let(:config) {
     {
@@ -11,29 +11,21 @@ describe Prerequisites, "environment variables" do
 
   subject(:prereq) { described_class.new(config) }
 
-  it "instantiates" do
-    expect(prereq).to be_a(Prerequisites)
-  end
+  context "when no env. vars. are required" do
+    let(:environment_variables) { nil }
 
-  it "checks" do
-    expect(prereq.check).to be(true)
+    specify { expect(prereq.check).to be(true) }
   end
 
   context "when a required env. var. is set" do
-    let(:environment_variables) { ["FOO"] }
-
     before do
       allow(ENV).to receive(:key?).with("FOO").and_return(true)
     end
 
-    it "checks" do
-      expect(prereq.check).to be(true)
-    end
+    specify { expect(prereq.check).to be(true) }
   end
 
   context "when a required env. var. is not set" do
-    let(:environment_variables) { ["FOO"] }
-
     it "raises an error" do
       expect {
         prereq.check
@@ -41,12 +33,21 @@ describe Prerequisites, "environment variables" do
     end
   end
 
+  context "when a required env. var. has the right value" do
+    let(:environment_variables) { [{"FOO" => "bar"}] }
+
+    before do
+      allow(ENV).to receive(:[]).with("FOO").and_return("bar")
+    end
+
+    specify { expect(prereq.check).to be(true) }
+  end
+
   context "when a required env. var. has the wrong value" do
     let(:environment_variables) { [{"FOO" => "bar"}] }
 
     before do
-      allow(ENV).to receive(:key?).with("FOO").and_return(true)
-      allow(ENV).to receive(:[]).and_return("wrong value")
+      allow(ENV).to receive(:[]).with("FOO").and_return("wrong value")
     end
 
     it "raises an error" do
