@@ -40,4 +40,19 @@ describe Prerequisites, "environment variables" do
       }.to raise_error(Prerequisites::EnvironmentVariableError)
     end
   end
+
+  context "when a required env. var. has the wrong value" do
+    let(:environment_variables) { [{"FOO" => "bar"}] }
+
+    before do
+      allow(ENV).to receive(:key?).with("FOO").and_return(true)
+      allow(ENV).to receive(:[]).and_return("wrong value")
+    end
+
+    it "raises an error" do
+      expect {
+        prereq.check
+      }.to raise_error(Prerequisites::EnvironmentVariableError)
+    end
+  end
 end

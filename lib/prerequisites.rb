@@ -13,10 +13,23 @@ class Prerequisites
 
   def environment_variables
     config.dig(:environment_variables).to_a.each do |env_var|
-      raise Prerequisites::EnvironmentVariableError.new("Required environment variable #{env_var} is not set") unless ENV.key?(env_var)
+      if env_var.is_a?(Hash)
+        var, value = env_var.first
+        check_env_var_has_value(var, value)
+      else
+        check_env_var_is_set(env_var)
+      end
     end
 
     true
+  end
+
+  def check_env_var_is_set(env_var)
+    raise Prerequisites::EnvironmentVariableError.new("Required environment variable #{env_var} is not set") unless ENV.key?(env_var)
+  end
+
+  def check_env_var_has_value(var, value)
+    raise Prerequisites::EnvironmentVariableError.new("Expected environment variable #{var} to be #{value}") unless ENV[var] == value
   end
 
 end
