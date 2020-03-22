@@ -1,3 +1,5 @@
+require "open3"
+
 class Prerequisites
   attr_reader :config
 
@@ -7,6 +9,7 @@ class Prerequisites
 
   def check
     environment_variables
+    executables_in_path
   end
 
   private
@@ -19,6 +22,14 @@ class Prerequisites
       else
         check_env_var_is_set(env_var)
       end
+    end
+
+    true
+  end
+
+  def executables_in_path
+    config.dig(:executables_in_path).to_a.each do |executable|
+      check_executable(executable)
     end
 
     true
@@ -40,6 +51,16 @@ class Prerequisites
     end
   end
 
+  def check_executable(executable)
+    _, _, status = Open3.capture3("which #{executable}")
+
+    unless status.success?
+      raise Prerequisites::ExecutableError.new(
+        "Required executable #{executable} not found in path"
+      )
+    end
+  end
 end
 
 class Prerequisites::EnvironmentVariableError < RuntimeError; end
+class Prerequisites::ExecutableError < RuntimeError; end
