@@ -25,11 +25,19 @@ class Prerequisites
   end
 
   def check_env_var_is_set(env_var)
-    raise Prerequisites::EnvironmentVariableError.new("Required environment variable #{env_var} is not set") unless ENV.key?(env_var)
+    unless ENV.key?(env_var)
+      raise Prerequisites::EnvironmentVariableError.new(
+        "Required environment variable #{env_var} is not set"
+      )
+    end
   end
 
   def check_env_var_has_value(var, value)
-    raise Prerequisites::EnvironmentVariableError.new("Expected environment variable #{var} to be #{value}") unless ENV[var] == value
+    unless ENV[var] == value
+      raise Prerequisites::EnvironmentVariableError.new(
+        "Expected environment variable #{var} to be #{value}"
+      )
+    end
   end
 
 end
