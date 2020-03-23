@@ -2,7 +2,7 @@
 
 A ruby gem to make it easy to test that a set of prerequisite conditions are in place.
 
-This is particularly useful when using ruby as 'glue' code for sysadmin or other tasks.
+This can be useful when using ruby as 'glue' code for sysadmin or other tasks.
 
 ## Installation
 
