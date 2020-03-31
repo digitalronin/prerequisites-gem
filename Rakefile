@@ -18,7 +18,7 @@ task default: ["spec"]
 spec = Gem::Specification.new { |s|
   # Change these as appropriate
   s.name              = "prerequisites"
-  s.version           = "0.1.0"
+  s.version           = "0.2.0"
   s.license           = "MIT"
   s.summary           = "Simplify checking pre-requisites (env. vars. & executables) for ruby scripts"
   s.author            = "David Salgado"

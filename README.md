@@ -23,6 +23,9 @@ This example checks that:
 * Environment variables "FOO" and "BAR" are set
 * Environment variable "BAZ" is set to the value "whatever"
 * Executables "grep", "git", and "kubectl" are in your $PATH
+* The shell commands execute successfully
+
+> NB: You should ensure that any commands you list in the `shell_commands` section have no side-effects. These are supposed to be pre-flight checks.
 
 ```
 config = {
@@ -35,6 +38,10 @@ config = {
     "grep",
     "git",
     "kubectl"
+  ],
+  shell_commands: [
+    "echo whatever | grep what",
+    "kubectl config current-context | grep myk8scluster"
   ]
 }
 
@@ -45,5 +52,6 @@ If any of these conditions are not met, the code will raise an error of class:
 
 * Prerequisites::EnvironmentVariableError
 * Prerequisites::ExecutableError
+* Prerequisites::ShellCommandError
 
 ...depending on the problem.

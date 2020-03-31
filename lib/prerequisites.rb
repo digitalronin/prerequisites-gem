@@ -10,6 +10,7 @@ class Prerequisites
   def check
     environment_variables
     executables_in_path
+    shell_commands
   end
 
   private
@@ -30,6 +31,20 @@ class Prerequisites
   def executables_in_path
     config.dig(:executables_in_path).to_a.each do |executable|
       check_executable(executable)
+    end
+
+    true
+  end
+
+  def shell_commands
+    config.dig(:shell_commands).to_a.each do |cmd|
+      _, _, status = Open3.capture3(cmd)
+
+      unless status.success?
+        raise Prerequisites::ShellCommandError.new(
+          "Shell command check failed: #{cmd}"
+        )
+      end
     end
 
     true
@@ -64,3 +79,4 @@ end
 
 class Prerequisites::EnvironmentVariableError < RuntimeError; end
 class Prerequisites::ExecutableError < RuntimeError; end
+class Prerequisites::ShellCommandError < RuntimeError; end
